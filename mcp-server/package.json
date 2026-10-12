@@ -1,0 +1,13 @@
+{
+  "name": "citation-tools-mcp-server",
+  "version": "1.0.0",
+  "description": "Toy MCP server exposing a citation-source-resolving tool, for demonstrating agentgateway MCP guardrails as a destination-allowlist control",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1"
+  }
+}

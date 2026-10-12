@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://agentgateway.dev/schema/config
+config:
+  adminAddr: "off"
+mcp:
+  port: 13100
+  policies:
+    cors:
+      allowOrigins: ["*"]
+      allowHeaders: ["*"]
+      exposeHeaders: ["Mcp-Session-Id"]
+    mcpGuardrails:
+      processors:
+      # Reject before the tool ever runs. fetch_citation_source's whole job
+      # is to fetch a URL, so the only thing that can distinguish a citation
+      # lookup from a laundered proxy request is which host source_url
+      # names. Everything not on the allowlist is rejected here, before the
+      # fetch happens -- the attacker-target upstream never sees the request.
+      - kind: expression
+        methods: {"tools/call": request}
+        condition: >-
+          mcp.params.name == 'fetch_citation_source' &&
+          has(mcp.params.arguments) &&
+          has(mcp.params.arguments.source_url) &&
+          !(mcp.params.arguments.source_url.startsWith('http://localhost:8081/') ||
+            mcp.params.arguments.source_url.startsWith('http://127.0.0.1:8081/') ||
+            mcp.params.arguments.source_url.startsWith('https://doi.org/') ||
+            mcp.params.arguments.source_url.startsWith('https://api.crossref.org/'))
+        reject: "source_url is not an allowlisted citation source; rejected before the fetch ran"
+  targets:
+  - name: citation-tools
+    stdio:
+      cmd: node
+      args: ["mcp-server/server.js"]
