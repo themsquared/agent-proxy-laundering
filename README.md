@@ -1,5 +1,7 @@
 # agent-proxy-laundering
 
+> 📖 **Read the write-up:** [Stopping Agent Proxy Laundering at the MCP Gateway](https://webofmike.com/agent-proxy-laundering/)
+
 A tool that fetches an external URL on request is a proxy whether anyone meant it
 to be or not. This repo reproduces that failure mode with a toy citation-resolver
 MCP tool, then shows the control that catches it: a destination allowlist enforced
